@@ -20,3 +20,6 @@ Thumbs.db
 # Workspace folders the user might create for staging media
 media/
 drafts/
+
+# Clip Machine python env (WhisperX)
+.venv/

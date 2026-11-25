@@ -4,12 +4,32 @@ A library of Claude Code skills for working with [Zernio](https://zernio.com). I
 
 This is a **Claude Code skill repo**, not a runtime or SDK project. The agent (Claude) has its native toolkit available — bash, curl, ffmpeg, vision, transcript extraction, web fetching. The skill is *instructions* for using those tools well; it isn't a framework around them.
 
+## Clip Machine project (how we run it here)
+
+This folder is also the working home of **the Clip Machine**: one long video in, native short clips out for TikTok, Instagram Reels and YouTube Shorts. The framework is `.claude/skills/clip-machine/` (SKILL.md + `reference/best-moments-prompt.md` + `reference/platform-cheat-sheet.md`); posting rides `.claude/skills/zernio-publish/`.
+
+**The four stations:** CUT (WhisperX word-level transcript, best moments scored with the framework, cut on word boundaries, reframe to 1080x1920) → CAPTION (burned word captions inside the safe band + different caption text per platform) → COVER (cover is frame 0; Reels title inside the center square) → POST (one Zernio request per clip, scheduled 2-3 min ahead, posted serially, verified after).
+
+**How we work together**
+- User hands over the long video (upload or Drive link). Claude transcribes, proposes the clip list with scores and anchors, and waits for the pick.
+- Claude produces the clips, then shows the full package per clip (file, captions, title, cover, schedule). **Nothing publishes without an explicit OK.**
+- Space clips 1-2 per day. Every clip points back to the long video.
+
+**Where things live** (all gitignored)
+- `media/source/` long videos · `media/transcripts/` WhisperX JSON · `media/clips/` finished 9:16 clips + covers · `drafts/` per-clip post bodies awaiting approval · `posts/` publish logs
+- `.venv/` Python env with WhisperX + yt-dlp: `. .venv/bin/activate` then `whisperx file.mp4 --model large-v3 --device cpu --compute_type int8 --output_format json --output_dir media/transcripts`
+- `.env` holds `ZERNIO_API_KEY` (skip-worktree is set, so the real key never gets staged). Load with `set -a; . ./.env; set +a`. API base: `https://zernio.com/api/v1`.
+
 ## Project layout
 
 ```
 zernio-library-skills/
 ├── .claude/
 │   └── skills/
+│       ├── clip-machine/                      ← long video → native TikTok/Reels/Shorts (CUT→CAPTION→COVER→POST)
+│       │   ├── SKILL.md
+│       │   └── reference/{best-moments-prompt,platform-cheat-sheet,initiation-prompt}.md
+│       │
 │       ├── zernio-publish/                    ← end-to-end social publishing
 │       │   ├── SKILL.md                          the workflow + Zernio API knowledge
 │       │   ├── reference/                        deep docs (loaded on demand)

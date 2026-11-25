@@ -17,7 +17,7 @@ This folder is also the working home of **the Clip Machine**: one long video in,
 
 **Where things live** (all gitignored)
 - `media/source/` long videos · `media/transcripts/` WhisperX JSON · `media/clips/` finished 9:16 clips + covers · `drafts/` per-clip post bodies awaiting approval · `posts/` publish logs
-- `.venv/` Python env with WhisperX + yt-dlp: `. .venv/bin/activate` then `whisperx file.mp4 --model large-v3 --device cpu --compute_type int8 --output_format json --output_dir media/transcripts`
+- `.venv/` Python env with WhisperX + yt-dlp: `. .venv/bin/activate` then `HF_HUB_DISABLE_XET=1 whisperx file.mp4 --model large-v3 --device cpu --compute_type int8 --output_format json --output_dir media/transcripts`
 - `.env` holds `ZERNIO_API_KEY` (skip-worktree is set, so the real key never gets staged). Load with `set -a; . ./.env; set +a`. API base: `https://zernio.com/api/v1`.
 
 ## Project layout
